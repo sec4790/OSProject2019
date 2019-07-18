@@ -34,7 +34,7 @@ void readCommand(char *);
 //writing prompt
 //pg 79
 void printPrompt(){
-	promptString = ...; //make something up here
+	char *promptString = "Simple Shell";
 	printf("%s", promptString);
 }
 
@@ -80,7 +80,7 @@ argument to see if argv[0] (the file name) appears there. Allocate a new string,
 	//check to see if file name is already an absolute path name
 	//we need to add stuff in here
 	if(*argv[0] == '/'){
-		...
+		return argv[0];
 	}//look in PATH directories.
 	//Use access() to see if the file is in a dir
 	for(i = 0; i < MAX_PATHS; i++){
@@ -117,7 +117,15 @@ int parsePath(char *dirs[]){
 void executeCommand(char *name, char **argc){
 	
 	/**Create child and execute command*/
+	int child_PID 0;
 	
+	if((childPID = fork()){
+		execv();//something should probably go in there.
+		exit(0);
+	}
+	else {
+		//do something else
+	}
 	/**Terminate child process*/
 }
 
@@ -133,21 +141,25 @@ int main(){
 	while(TRUE){
 		printPrompt();
 	
-	/**read command line and parse it*/
-	readCommand(cLine);
-	parseCommand(commanLine, &command);
+		/**read command line and parse it*/
+		readCommand(cLine);
+		parseCommand(commanLine, &command);
 	}
 	
 	/**Get the full pathname for the file*/
 	command.name = lookupPath(command.argv, pathv);
 	if(command.name == NULL){
 		/**Report error*/
+		fprintf(stderr, "Command not known");
 		continue;
-	}
-	
+	}else {
 	//Execute command here
 	executeCommand()//add some params
+	}
+	
+	
 
+	return 0;
 	
 }
 
