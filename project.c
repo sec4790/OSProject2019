@@ -1,5 +1,12 @@
-/**This is the source code. Insert skeleton here*/
-//the include stuff
+/**This is the source code for COSC 4302 Summer 2019
+Contributors: Sarah Baker, Brittany Thibodeaux, and Muhammad Ghazi
+
+Design and implement a simple, interactive shell program that prompts the user for a command,
+parses the command and then executes it with a child process. 
+
+*/
+
+/**Directives*/
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,10 +22,12 @@
 #define WHITESPACE " .,\t\n"
 
 #ifndef NULL
-#define NULL ...
+#define NULL
 #endif
 
-//pg 81
+/**
+The C data structure used to save arguments
+*/
 struct command_t{
 	char *name;
 	int argc;
@@ -31,24 +40,31 @@ int parsePath(char **);
 void printPrompt();
 void readCommand(char *);
 
-//writing prompt
-//pg 79
+/**
+Build the prompt string to have the machine name,
+current directory, or other desired information
+*/
 void printPrompt(){
 	char *promptString = "Simple Shell";
 	printf("%s", promptString);
 }
 
-//read command
-// p 79
-//we will probably need to change this
-void readCommand(char *buff){
-	/**This code uses any set o fI/O functions, such as those in the stdio library to read the entire command line into 
+/**T
+his code uses any set of I/O functions, such as those in the stdio library to read the entire command line into 
 the buffer. This implememntation is greatly simplified, but it does the job}*/
+void readCommand(char *buff){
+	
 	gets(buff);
 }
 
-//parse command
-// p 63
+/**
+Determine command name and construct the parameter list. This funciton
+will build argv[] and set the argc value. argc is the number of "tokens" or words
+on the command line argv[] is an array of strings (pointers to char*). The last element in 
+argv[] must be NULL. As we scan the command line from the left, the firs ttoken
+goes in argv[0], the second in argv[1], and so on. Each time we add a token to 
+argv[], we increment argc.
+*/
 int parseCommand(char *cLine, struct command_t *cmd){
 	int argc;
 	char **clPtr;
@@ -58,7 +74,7 @@ int parseCommand(char *cLine, struct command_t *cmd){
 	cmd->argv[argc] = (char *) malloc(MAX_ARG_LEN);
 	/**Fill argv[]*/
 	while((cmd->argv[argc] = strsep(clPtr, WHITESPACE)) != NULL) {
-		cmd->argv[++argc] = (char *) malloc(MAX_ARG_LEN);
+		cmd->argv[++argc] = (char *) malloc(MAX_ARG_LEN); //increment
 	}
 	/**set the command name and argc*/
 	cmd->argc = argc-1;
@@ -68,12 +84,13 @@ int parseCommand(char *cLine, struct command_t *cmd){
 }
 
 
-//look up path
-//p 81
-char *lookupPath(char **argv, char **dir){
-	/*This funciton searches the directories identified ;by the dir
+/*
+This funciton searches the directories identified ;by the dir
 argument to see if argv[0] (the file name) appears there. Allocate a new string,
-	place the full path name in it, then return the string*/
+place the full path name in it, then return the string
+*/
+char *lookupPath(char **argv, char **dir){
+	
 	char *result;
 	char pName[MAX_PATH_LEN];
 
@@ -92,11 +109,12 @@ argument to see if argv[0] (the file name) appears there. Allocate a new string,
 	return NULL;
 }
 
-//parse path
-//p 80
+/**
+This function reads the PATH variable for this environment, then
+builds an array, dirs[], of the directores in PATH
+*/
 int parsePath(char *dirs[]){
-	/**This function reads the PATH variable for this environment, then
-	builds an array, dirs[], of the directores in PATH*/
+
 	char *pathEnvVar;
 	char *thePath;
 	
@@ -113,27 +131,34 @@ int parsePath(char *dirs[]){
 }
 
 
-//execute
+/**
+This function creates a child process and
+executes the command
+*/
 void executeCommand(char *name, char **argc){
 	
 	/**Create child and execute command*/
-	int child_PID 0;
+	int child_PID;
 	
-	if((childPID = fork()){
+	if((childPID = fork() == 0){
 		execv();//something should probably go in there.
 		exit(0);
 	}
-	else {
-		//do something else
+	else if((childPID = fork() < 0)){
+		printf("error with fork\n\n");
+		exit(1);
+		
 	}
-	/**Terminate child process*/
+	/**ELSE Wait for child to terminate*/
+	//code here
 }
 
-//main method
+
 int main(){
 	/**Initialize variables*/
-	//init
-	//init
+	char *pathv[MAX_PATHS];
+	char cLine[LINE_LEN];
+	struct command_t command;
 	//blah blah here
 	
 	/**Get directory paths from PATH*/
@@ -144,22 +169,27 @@ int main(){
 		/**read command line and parse it*/
 		readCommand(cLine);
 		parseCommand(commanLine, &command);
+		
+		/**strcmp compares strings. if the command is "exit" then exit*/
+		if(strcmp(command.name, "exit") == 0){
+			exit(0)
+		}
+	
+		/**Get the full pathname for the file*/
+		command.name = lookupPath(command.argv, pathv);
+		if(command.name == NULL){
+			/**Report error*/
+			fprintf(stderr, "Command not known");
+			continue;
 	}
 	
-	/**Get the full pathname for the file*/
-	command.name = lookupPath(command.argv, pathv);
-	if(command.name == NULL){
-		/**Report error*/
-		fprintf(stderr, "Command not known");
-		continue;
-	}else {
 	//Execute command here
-	executeCommand()//add some params
+	executeCommand(command.name, command.argv)//add some params
 	}
 	
 	
 
-	return 0;
+	return 1;
 	
 }
 
