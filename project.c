@@ -1,8 +1,11 @@
+
 /* 
 COSC 4302
 Group Project
 Sarah Baker, Muhammad Ghazi, Brittany Thibodeaux
  */
+
+/**Directives*
 
 #include <string.h>
 #include <stdlib.h>
@@ -21,10 +24,12 @@ Sarah Baker, Muhammad Ghazi, Brittany Thibodeaux
 #define WHITESPACE 	" .,\t\n"
 
 #ifndef NULL
-#define NULL ...
+#define NULL
 #endif
 
-//pg 81
+/**
+The C data structure used to save arguments
+*/
 struct command_t{
 	char *name;
 	int argc;
@@ -37,6 +42,7 @@ int parseCommand(char *, struct command_t);
 int parsePath(char **);
 void printPrompt();
 void readCommand(char *);
+
 
 int main(){
 	// Shell initialization
@@ -99,10 +105,17 @@ int parsePath(char *dirs[]){
 	} // TODO Verify this solution
 }
 
+
+/**
+Build the prompt string to have the machine name,
+current directory, or other desired information
+*/
+
 void printPrompt(){
 	char *promptString = "% ";
 	printf("%s", promptString);
 }
+
 
 void readCommand(char *buffer) {
     // Read entire command line into the buffer
@@ -129,15 +142,17 @@ int parseCommand(char *cLine, struct command_t *cmd) {
     cmd->name = (char *)malloc(sizeof(cmd->argv[0]));
     strcpy(cmd->name, cmd->argv[0]);
     return 1;
+
 }
 
 
-//look up path
-//p 81
-char *lookupPath(char **argv, char **dir){
-	/*This funciton searches the directories identified ;by the dir
+/*
+This funciton searches the directories identified ;by the dir
 argument to see if argv[0] (the file name) appears there. Allocate a new string,
-	place the full path name in it, then return the string*/
+place the full path name in it, then return the string
+*/
+char *lookupPath(char **argv, char **dir){
+	
 	char *result;
 	char pName[MAX_PATH_LEN];
 
@@ -154,6 +169,10 @@ argument to see if argv[0] (the file name) appears there. Allocate a new string,
 	//FILE NAME NOT FOUND
 	fprintf(stderr, "%s: command not found\n", argv[0]);
 	return NULL;
+}
+
+
+
 }
 
 
