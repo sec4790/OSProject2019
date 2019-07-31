@@ -39,38 +39,43 @@ void printPrompt();
 void readCommand(char *);
 
 int main(){
-	// Shell Initialization
-	char commandLine[LINE_LEN];
-	struct command_t command;
-	// TODO finish listing variables
-	
-	// TODO figure out pathv variable initialization
-	parsePath(pathv); // Get directory paths from PATH
-	
-	while(TRUE){
-		printPrompt();
-	
-		// Read command line and parse
-		readCommand(commandLine);
-		parseCommand(commandLine, &command);
-	}
-	
-	// Get full pathname for the file
-	command.name = lookupPath(command.argv, pathv);
-	if(command.name == NULL){
-		// Report error
-		fprintf(stderr, "Command not known");
-		continue;
-	}
-	
-	else {
-		// Execute command 
-		executeCommand() // Add some params
-	}
+	// Shell initialization
+    char commandLine[LINE_LEN];
+    struct command_t command;
+    char pathv[MAX_PATH_LEN] = getenv("PATH");
+    int i;
+    // List any remaining variables
 
-	// Shell termination
-	return 0;
+    // Get directory paths from PATH
+    parsePath(pathv); 
+
+    while(TRUE) {
+        printPrompt();
+
+        // Read command line and parse
+        readCommand(commandLine);
+        parseCommand(commandLine, &command);
+
+        // Get full pathname for the file
+        command.name = lookUpPath(command.argv, pathv);
+        if(command.name == NULL) {
+            // Report error
+            continue;
+        }
+
+        // Create child and execute command
+        if (fork() == 0) {
+
+        }
+
+        else {
+            // Wait for child to terminate
+        
+	}
+    }
 	
+    // Shell termination
+    return 0;
 }
 
 int parsePath(char *dirs[]){
@@ -99,29 +104,31 @@ void printPrompt(){
 	printf("%s", promptString);
 }
 
-void readCommand(char *buff){
-	// Read entire command line into the buffer
-	// TODO get buffer
+void readCommand(char *buffer) {
+    // Read entire command line into the buffer
+    fgets(commandLine, LINE_LEN, stdin);
 }
 
-int parseCommand(char *cLine, struct command_t *cmd){
-	int argc;
-	char **clPtr;
-	
-	// Initialize
-	clPtr = &cLine; 	//cLine is the command line
-	argc = 0;
-	cmd->argv[argc] = (char *) malloc(MAX_ARG_LEN);
-	
-	// Fill argv[]
-	while((cmd->argv[argc] = strsep(clPtr, WHITESPACE)) != NULL) {
-		cmd->argv[++argc] = (char *) malloc(MAX_ARG_LEN);
-	}
-	// Set command name and argc
-	cmd->argc = argc-1;
-	cmd->name = (char *) malloc(sizeof(cmd->argv[0]));
-	strcpy(cmd->name, cmd->argv[0]);
-	return 1;
+// TODO Verify that this function works in this shell as well
+int parseCommand(char *cLine, struct command_t *cmd) {
+    int argc;
+    char **clPtr;
+
+    // Initialize
+    clPtr = &cLine;     // cLine is command line
+    argc = 0;
+    cmd->argv[argc] = (char *)malloc(MAX_ARG_LEN);
+
+    // Fill argv[] 
+    while((cmd->argv[argc] = strsep(clPtr, WHITESPACE)) != NULL) {
+        cmd->argv[++argc] = (char *)malloc(MAX_ARG_LEN);
+    }
+
+    // Set command name and argc
+    cmd->argc = argc - 1;
+    cmd->name = (char *)malloc(sizeof(cmd->argv[0]));
+    strcpy(cmd->name, cmd->argv[0]);
+    return 1;
 }
 
 
@@ -148,26 +155,5 @@ argument to see if argv[0] (the file name) appears there. Allocate a new string,
 	fprintf(stderr, "%s: command not found\n", argv[0]);
 	return NULL;
 }
-
-
-
-
-//execute
-void executeCommand(char *name, char **argc){
-	
-	/**Create child and execute command*/
-	int child_PID 0;
-	
-	if((childPID = fork()){
-		execv();//something should probably go in there.
-		exit(0);
-	}
-	else {
-		//do something else
-	}
-	/**Terminate child process*/
-}
-
-
 
 
