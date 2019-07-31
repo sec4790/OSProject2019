@@ -1,18 +1,24 @@
-/**This is the source code. Insert skeleton here*/
-//the include stuff
+/* 
+COSC 4302
+Group Project
+Sarah Baker, Muhammad Ghazi, Brittany Thibodeaux
+ */
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
-
-
-//defs
-#define LINE_LEN 80;
-#define MAX_ARGS 64
+// Define variables
+#define LINE_LEN 	80;
+#define MAX_ARGS 	64
 #define MAX_ARG_LENGTH	16;
 #define MAX_PATHS	64;
-#define MAX_PATH_LEN 96;
-#define WHITESPACE " .,\t\n"
+#define MAX_PATH_LEN 	96;
+#define WHITESPACE 	" .,\t\n"
 
 #ifndef NULL
 #define NULL ...
@@ -25,42 +31,93 @@ struct command_t{
 	char *argv[MAX_ARGS];
 };
 
+// Function prototypes
 char *lookupPath(char **, char **);
 int parseCommand(char *, struct command_t);
 int parsePath(char **);
 void printPrompt();
 void readCommand(char *);
 
-//writing prompt
-//pg 79
+int main(){
+	// Shell Initialization
+	char commandLine[LINE_LEN];
+	struct command_t command;
+	// TODO finish listing variables
+	
+	// TODO figure out pathv variable initialization
+	parsePath(pathv); // Get directory paths from PATH
+	
+	while(TRUE){
+		printPrompt();
+	
+		// Read command line and parse
+		readCommand(commandLine);
+		parseCommand(commandLine, &command);
+	}
+	
+	// Get full pathname for the file
+	command.name = lookupPath(command.argv, pathv);
+	if(command.name == NULL){
+		// Report error
+		fprintf(stderr, "Command not known");
+		continue;
+	}
+	
+	else {
+		// Execute command 
+		executeCommand() // Add some params
+	}
+
+	// Shell termination
+	return 0;
+	
+}
+
+int parsePath(char *dirs[]){
+	// Read the PATH variable for the environment then build dirs[], an array of
+	// directories in PATH
+	
+	char *pathEnvVar;
+	char *thePath;
+	
+	for(int i = 0; i < MAX_ARGS; i++){
+		dirs[i] = NULL;
+	}
+	pathEnvVar = (char *) getenv("PATH");
+	thePath = (char *) malloc(strlen(pathEnvVar) + 1);
+	strcpy(thePath, pathEnvVar);
+	
+	/**Lop to parse thePath. Look for a ':' delimiter between
+	each path name*/
+	while(int i = 0; i < MAX_ARGS; i++) {
+		dirs[i] = strsep(thePath, ":");
+	} // TODO Verify this solution
+}
+
 void printPrompt(){
-	char *promptString = "Simple Shell";
+	char *promptString = "% ";
 	printf("%s", promptString);
 }
 
-//read command
-// p 79
-//we will probably need to change this
 void readCommand(char *buff){
-	/**This code uses any set o fI/O functions, such as those in the stdio library to read the entire command line into 
-the buffer. This implememntation is greatly simplified, but it does the job}*/
-	gets(buff);
+	// Read entire command line into the buffer
+	// TODO get buffer
 }
 
-//parse command
-// p 63
 int parseCommand(char *cLine, struct command_t *cmd){
 	int argc;
 	char **clPtr;
-	/**Initialization*/
-	clPtr = &cLine; //cLine is the command line
+	
+	// Initialize
+	clPtr = &cLine; 	//cLine is the command line
 	argc = 0;
 	cmd->argv[argc] = (char *) malloc(MAX_ARG_LEN);
-	/**Fill argv[]*/
+	
+	// Fill argv[]
 	while((cmd->argv[argc] = strsep(clPtr, WHITESPACE)) != NULL) {
 		cmd->argv[++argc] = (char *) malloc(MAX_ARG_LEN);
 	}
-	/**set the command name and argc*/
+	// Set command name and argc
 	cmd->argc = argc-1;
 	cmd->name = (char *) malloc(sizeof(cmd->argv[0]));
 	strcpy(cmd->name, cmd->argv[0]);
@@ -92,25 +149,7 @@ argument to see if argv[0] (the file name) appears there. Allocate a new string,
 	return NULL;
 }
 
-//parse path
-//p 80
-int parsePath(char *dirs[]){
-	/**This function reads the PATH variable for this environment, then
-	builds an array, dirs[], of the directores in PATH*/
-	char *pathEnvVar;
-	char *thePath;
-	
-	for(i = 0; i < MAX_ARGS; i++){
-		dirs[i] = NULL;
-	}
-	pathEnvVar = (char *) getenv("PATH");
-	thePath = (char *) malloc(strlen(pathEnvVar) + 1);
-	strcpy(thePath, pathEnvVar);
-	
-	/**Lop to parse thePath. Look for a ':' delimiter between
-	each path name*/
-	//we need to add the loop here
-}
+
 
 
 //execute
@@ -129,38 +168,6 @@ void executeCommand(char *name, char **argc){
 	/**Terminate child process*/
 }
 
-//main method
-int main(){
-	/**Initialize variables*/
-	//init
-	//init
-	//blah blah here
-	
-	/**Get directory paths from PATH*/
-	parsePath(pathv);
-	while(TRUE){
-		printPrompt();
-	
-		/**read command line and parse it*/
-		readCommand(cLine);
-		parseCommand(commanLine, &command);
-	}
-	
-	/**Get the full pathname for the file*/
-	command.name = lookupPath(command.argv, pathv);
-	if(command.name == NULL){
-		/**Report error*/
-		fprintf(stderr, "Command not known");
-		continue;
-	}else {
-	//Execute command here
-	executeCommand()//add some params
-	}
-	
-	
 
-	return 0;
-	
-}
 
 
