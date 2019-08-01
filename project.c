@@ -48,7 +48,7 @@ int main(){
 	// Shell initialization
     char commandLine[LINE_LEN];
     struct command_t command;
-    char pathv[MAX_PATH_LEN] = getenv("PATH");
+    char *pathv[MAX_PATH_LEN] = getenv("PATH");
     int i;
     // List any remaining variables
 
@@ -153,6 +153,7 @@ char *lookupPath(char **argv, char **dir){
 	
 	char *result;
 	char pName[MAX_PATH_LEN];
+	char *tempDir = (char *)malloc ( MAX_PATH_LEN);
 
 	//check to see if file name is already an absolute path name
 	if(*argv[0] == '/'){
@@ -160,7 +161,16 @@ char *lookupPath(char **argv, char **dir){
 	}//look in PATH directories.
 	//Use access() to see if the file is in a dir
 	for(i = 0; i < MAX_PATHS; i++){
-		... //we need to add stuff in here
+		if(dirs[i] == NULL)
+			continue;
+		
+		strcpy(tempDir,dirs[i]);
+		strncat(tempDir,"/",1);
+		strncat(tempDir,argv[0],strlen(argv[0]));
+		
+		if(access(tempDir, F_OK) == 0) {
+			return tempDir;
+		}
 	}
 	
 	//FILE NAME NOT FOUND
