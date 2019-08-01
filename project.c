@@ -1,4 +1,3 @@
-
 /* 
 COSC 4302
 Group Project
@@ -14,14 +13,15 @@ Sarah Baker, Muhammad Ghazi, Brittany Thibodeaux
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <stdbool.h>
 
 // Define variables
-#define LINE_LEN 	80;
-#define MAX_ARGS 	64
-#define MAX_ARG_LENGTH	16;
-#define MAX_PATHS	64;
-#define MAX_PATH_LEN 	96;
-#define WHITESPACE 	" .,\t\n"
+#define LINE_LEN 	    80
+#define MAX_ARGS 	    64
+#define MAX_ARG_LENGTH	16
+#define MAX_PATHS	    64
+#define MAX_PATH_LEN 	96
+#define WHITESPACE 	    " .,\t\n"
 
 #ifndef NULL
 #define NULL
@@ -48,22 +48,23 @@ int main(){
 	// Shell initialization
     char commandLine[LINE_LEN];
     struct command_t command;
-    char *pathv[MAX_PATH_LEN] = getenv("PATH");
+    char *pathv = getenv("PATH");
     int i;
+    bool run = true;
     // List any remaining variables
 
     // Get directory paths from PATH
-    parsePath(pathv); 
+    parsePath(&pathv); 
 
-    while(TRUE) {
+    while(run) {
         printPrompt();
 
         // Read command line and parse
         readCommand(commandLine);
-        parseCommand(commandLine, &command);
+        parseCommand(commandLine, command);
 
         // Get full pathname for the file
-        command.name = lookUpPath(command.argv, pathv);
+        command.name = lookupPath(command.argv, pathv);
         if(command.name == NULL) {
             // Report error
             continue;
@@ -181,5 +182,3 @@ char *lookupPath(char **argv, char **dir){
 
 
 }
-
-
