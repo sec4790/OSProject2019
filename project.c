@@ -5,7 +5,7 @@ Group Project
 Sarah Baker, Muhammad Ghazi, Brittany Thibodeaux
  */
 
-/**Directives*
+/**Directives*/
 
 #include <string.h>
 #include <stdlib.h>
@@ -70,14 +70,12 @@ int main(){
         }
 
         // Create child and execute command
-        if (fork() == 0) {
-
-        }
-
-        else {
-            // Wait for child to terminate
-        
-	}
+ 
+	if((childPID = fork())==0) {
+		execv(command.name, command.argv);
+		printf("Unknown command\n");
+		exit(0);
+            }
     }
 	
     // Shell termination
@@ -157,7 +155,6 @@ char *lookupPath(char **argv, char **dir){
 	char pName[MAX_PATH_LEN];
 
 	//check to see if file name is already an absolute path name
-	//we need to add stuff in here
 	if(*argv[0] == '/'){
 		return argv[0];
 	}//look in PATH directories.
